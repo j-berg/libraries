@@ -199,8 +199,8 @@ def volcano(df, comp_name, base_name, highlights, figure_title):
     # Calculate p-value using 1-way ANOVA with replicates and append to df_...
     for row in df.iterrows():
         index, data = row
-        comp_row = data[4:8].values.tolist()
-        base_row = data[0:4].values.tolist()
+        comp_row = data[4:8].values.tolist() #<----------how to slice this?
+        base_row = data[0:4].values.tolist() #<----------how to slice this?
 
         # Append p_value to df_mecr
         statistic, p_value = stats.f_oneway(comp_row, base_row)
