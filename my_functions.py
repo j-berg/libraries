@@ -21,6 +21,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import pandas as pd
+import scipy.stats as stats
 from scipy.stats import linregress
 
 
@@ -177,10 +178,44 @@ def basic_heat(df, heat_title=None, scaled=True):
     plt.savefig(heat_title + '.png')
 
 
-
 # Volcano Plot
+def volcano(df, comp_name, base_name, highlights, figure_title):
 
+    #Check datatypes
+    check_format(df, pd.DataFrame)
+    check_format(comp_name, str)
+    check_format(base_name, str)
+    check_format(highlights, list)
+    check_format(figure_title, str)
 
+    #Make df of sample averages
+    df_avg = {comp_name: df.filter(regex=comp_name).mean(), base_name: df.filter(regex=base_name).mean()}
+
+    #Calculate fold change using average
+    df_volcano = np.log2(df_avg[comp_name] / df_avg[base_name])
+    df_volcano = pd.DataFrame(df_volcano, columns=['log2 Fold Change'])
+    df_volcano['-log10 P-Value'] = ''
+
+    # Calculate p-value using 1-way ANOVA with replicates and append to df_...
+    for row in df.iterrows():
+        index, data = row
+        comp_row = data[4:8].values.tolist()
+        base_row = data[0:4].values.tolist()
+
+        # Append p_value to df_mecr
+        statistic, p_value = stats.f_oneway(comp_row, base_row)
+        df_volcano.loc[index,'-log10 P-Value'] = float(-1 * (np.log10(p_value)))
+
+    df_volcano = df_volcano.dropna()
+    df_volcano = df_volcano.drop('nan')
+
+    # Scatter plot log2FoldChange vs. log10P-Value
+    ax = sns.scatterplot(x='log2 Fold Change', y='-log10 P-Value', data=df_volcano, color='LightGray')
+    ax = sns.scatterplot(x='log2 Fold Change', y='-log10 P-Value', data=df_volcano.loc[highlights], color='DarkRed')
+
+    ax = ax.set_title(figure_title)
+
+    plt.savefig(figure_title + '.png')
 
 
 # Violin Plot
