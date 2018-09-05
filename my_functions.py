@@ -5,6 +5,10 @@ Statistical plotting package of common routines
 Author: Jordan Berg
 Version: 0.0.1
 
+Instructions:
+To .bash_profile, add:
+export PYTHONPATH="${PYTHONPATH}:/.../file_dir"
+
 To do:
 Test on sample datasets -- create a 10*10 df for testing
 finish checking fig_titles, etc if not None
