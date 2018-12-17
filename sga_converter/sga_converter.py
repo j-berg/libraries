@@ -177,4 +177,4 @@ for index, row in df.iterrows():
         else:
             pass
 
-df.to_csv('384to96well_converted_' + file,sep=',', header=True,index=False)
+df.to_csv('96to384well_converted_' + file,sep=',', header=True,index=False)
